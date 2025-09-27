@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>N.Yaqoubi.Animation_1</title>
+  <!-- 
+    File Name (per assignment format): N.Yaqoubi.Animation_1.htm
+    Author/Student: Nizamuddin Yaqoubi
+    Course: CSW 38 - Canvas Animation Assignment #1
+    Notes:
+      - Color of primary object CHANGED
+      - Canvas location CHANGED (placed in right column of layout)
+      - Object size CHANGED
+      - Movement direction CHANGED (diagonal + vertical)
+      - Second moving object ADDED
+  -->
+  <style>
+    :root{
+      --ink:#1a1a1a;
+      --bg:#faf7f2;
+      --accent:#9b6b00;
+      --card:#ffffff;
+      --border:#d9c6a6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:var(--bg);
+      /* PAGE LAYOUT: two columns so the canvas sits in a new location (right side) */
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1.25rem;
+      padding: 1.25rem;
+      align-items:start;
+    }
+    header{
+      grid-column: 1 / 2;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    }
+    header h1{
+      margin: 0 0 .25rem 0;
+      font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+    }
+    header p{margin:.25rem 0 .5rem 0}
+    .links a{color:var(--accent); text-decoration:none; border-bottom:1px dashed var(--accent)}
+    .content{
+      grid-column: 1 / 2;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      line-height: 1.55;
+    }
+    .stage{
+      grid-column: 2 / 3; /* CANVAS moved to the RIGHT column to satisfy "Canvas Location" */
+      position: sticky;
+      top: 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .75rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    }
+    .stage h2{
+      margin: .25rem .25rem .5rem .25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color:#333;
+    }
+    canvas{
+      display:block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      background: radial-gradient(1200px 300px at 50% 10%, #fff 0%, #f7efe1 50%, #f3e7cf 100%);
+      border: 1px solid #e7d8b9;
+    }
+    footer{
+      grid-column: 1 / -1;
+      text-align:center;
+      font-size:.875rem;
+      color:#5b4a2b;
+      opacity:.9;
+      padding-top:.5rem;
+    }
+    code{background:#fff2cc; padding:.1rem .25rem; border-radius:6px; border:1px solid #f0dfae}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to Web Animation! <span aria-hidden="true">✨</span></h1>
+    <p><strong>Student:</strong> <span style="font-weight:700;">Nizamuddin Yaqoubi</span></p>
+    <div class="links">
+      <p>
+        Reference: <a href="https://www.w3schools.com/graphics/canvas_intro.asp" target="_blank" rel="noopener">W3Schools: HTML5 Canvas</a> &nbsp;|&nbsp;
+        Example Provided: <a href="https://professortony.github.io/Course_Files/CSW_38/Canvas-Assignment_1.htm" target="_blank" rel="noopener">Canvas-Assignment_1.htm</a>
+      </p>
+    </div>
+    <p><em>Filename per instructions:</em> <code>N.Yaqoubi.Animation_1.htm</code></p>
+  </header>
+
+  <article class="content">
+    <h3>Example / Assignment Animation #1</h3>
+    <p>
+      The HTML5 <code>&lt;canvas&gt;</code> element lets us draw shapes and animate them with JavaScript.
+      By drawing, clearing, and redrawing objects with slightly different positions on each frame
+      (using <code>requestAnimationFrame()</code>), we create motion.
+    </p>
+    <figure style="margin:0; padding:.75rem; border:1px dashed #d9c6a6; border-radius:12px; background:#fffdf6;">
+      <figcaption style="font-weight:600; margin-bottom:.35rem;">Animation starts with code:</figcaption>
+      <pre style="margin:0; overflow:auto;"><code>// We update x/y positions and bounce on edges
+// then repaint every frame to animate.</code></pre>
+    </figure>
+    <p style="margin-top:.75rem">
+      Below is a live canvas demo. For grading:
+    </p>
+    <ul>
+      <li><strong>Object Color</strong>: Primary circle color changed to a teal-blue.</li>
+      <li><strong>Object Size</strong>: Primary circle radius set to <code>40</code> (bigger than default).</li>
+      <li><strong>Canvas Location</strong>: Canvas moved to the right column of the page layout.</li>
+      <li><strong>Movement Direction</strong>: Diagonal for the circle; vertical for the square.</li>
+      <li><strong>Second Object</strong>: Added a square that moves vertically.</li>
+    </ul>
+  </article>
+
+  <aside class="stage">
+    <h2>Live Canvas Demo</h2>
+    <canvas id="stage" width="640" height="360" aria-label="Canvas animation area">
+      Your browser does not support the HTML5 canvas tag.
+    </canvas>
+  </aside>
+
+  <footer>
+    <small>Professor Pacheco | Technology &amp; Computer Sciences &middot; Student: Nizamuddin Yaqoubi</small>
+  </footer>
+
+  <script>
+    /* =============================
+       CANVAS ANIMATION DEMO
+       Author: Nizamuddin Yaqoubi
+       Course: CSW 38 - Animation #1
+       ============================= */
+
+    // Grab canvas & 2D context
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+
+    // PRIMARY OBJECT: Circle (color + size CHANGED)
+    const ball = {
+      x: 80,
+      y: 80,
+      vx: 3.2,   // horizontal speed
+      vy: 2.4,   // vertical speed (diagonal movement)
+      r: 40,     // radius CHANGED (bigger)
+      // Color CHANGED from typical red to teal-blue
+      color: '#0aa5ff'
+    };
+
+    // SECOND OBJECT: Square (distinct color, vertical movement)
+    const cube = {
+      x: canvas.width - 120,
+      y: 40,
+      size: 36,
+      vy: 3.8, // vertical movement
+      color: '#ff7a59'
+    };
+
+    // Utility: draw the circle
+    function drawBall(b){
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fillStyle = b.color;
+      ctx.fill();
+    }
+
+    // Utility: draw the square
+    function drawCube(c){
+      ctx.fillStyle = c.color;
+      ctx.fillRect(c.x, c.y, c.size, c.size);
+    }
+
+    // Optional: subtle background grid to visualize movement
+    function drawGrid(spacing=40){
+      ctx.save();
+      ctx.globalAlpha = 0.1;
+      for(let x=0; x<canvas.width; x+=spacing){
+        ctx.beginPath();
+        ctx.moveTo(x,0); ctx.lineTo(x,canvas.height);
+        ctx.strokeStyle = '#7a6c50';
+        ctx.stroke();
+      }
+      for(let y=0; y<canvas.height; y+=spacing){
+        ctx.beginPath();
+        ctx.moveTo(0,y); ctx.lineTo(canvas.width,y);
+        ctx.strokeStyle = '#7a6c50';
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Animation Loop
+    function animate(){
+      // Clear the scene
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+
+      // Background (soft vignette)
+      const g = ctx.createLinearGradient(0,0,0,canvas.height);
+      g.addColorStop(0, '#fffaf0');
+      g.addColorStop(1, '#f7ecd2');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,canvas.width, canvas.height);
+
+      drawGrid(40);
+
+      // Update ball (diagonal)
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // Bounce logic for ball
+      if(ball.x + ball.r > canvas.width || ball.x - ball.r < 0){
+        ball.vx *= -1;
+      }
+      if(ball.y + ball.r > canvas.height || ball.y - ball.r < 0){
+        ball.vy *= -1;
+      }
+
+      // Update cube (vertical only)
+      cube.y += cube.vy;
+      if(cube.y + cube.size > canvas.height || cube.y < 0){
+        cube.vy *= -1;
+      }
+
+      // Draw shapes
+      drawBall(ball);
+      drawCube(cube);
+
+      // Helpful labels
+      ctx.fillStyle = '#3b2f1a';
+      ctx.font = '14px system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial';
+      ctx.fillText('Circle: diagonal movement', 16, 22);
+      ctx.fillText('Square: vertical movement', 16, 42);
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start!
+    animate();
+  </script>
+</body>
+</html>
